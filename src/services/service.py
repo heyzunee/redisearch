@@ -13,7 +13,6 @@ def insert(request: Movie, index_name="idx:test"):
         __dict["genres"] = json.dumps(__dict["genres"])
         redisearch.client.redis.hset(f"doc:{request.id}", mapping=__dict)
         print(f"Inserted request with ID: {request.id}")
-        return redisearch.get_item(request.id)
     except Exception as e:
         print(f"Failed to insert request with ID: {request.id}: {str(e)}")
 
@@ -29,18 +28,31 @@ def delete(request_id: str, index_name="idx:test"):
         print(f"Failed to delete request with ID {request_id}: {str(e)}")
 
 
-def update(request_id: str, request: Movie, index_name="idx:test"):
+def update(id, request: dict, index_name="idx:test"):
     """Updates a request document in the Redisearch index."""
     redisearch = Redisearch(index_name)
     try:
+        # Get the request document from Redisearch
+        item = redisearch.get_item(id)
+        if not item:
+            print(f"Movie with ID {id} not found.")
+            return
+
+        if "genres" in item and isinstance(item["genres"], str):
+            item["genres"] = json.loads(item["genres"])
+
+        item = Movie(**item)
+        item = item.dict()
+
         # Update the request document in Redis using hset
-        __dict = request.dict()
-        __dict["genres"] = json.dumps(__dict["genres"])
-        redisearch.client.redis.hset(f"doc:{request_id}", mapping=__dict)
-        print(f"Updated request with ID: {request_id}")
-        return redisearch.get_item(request_id)
+        item.update(request)
+        if "genres" in item:
+            item["genres"] = json.dumps(item["genres"])
+        redisearch.client.redis.hset(f"doc:{id}", mapping=item)
+        print(f"Updated request with ID: {id}")
+        return redisearch.get_item(id)
     except Exception as e:
-        print(f"Failed to update request with ID: {request_id}: {str(e)}")
+        print(f"Failed to update request with ID: {id}: {str(e)}")
 
 
 def search(search_term: str, field: str, index_name="idx:test"):

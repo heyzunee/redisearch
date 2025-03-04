@@ -1,12 +1,13 @@
 import ast
 import json
+
 import pandas as pd
 import redisearch.aggregation as aggregations
-from redisearch import Client, IndexDefinition, TextField, NumericField, Query
 from redis import Redis, ResponseError
-
 from src.config import REDIS_HOST, REDIS_PORT
 from src.schemas.schema import Movie
+
+from redisearch import Client, IndexDefinition, NumericField, Query, TextField
 
 
 class Redisearch:
@@ -40,7 +41,6 @@ class Redisearch:
         """Retrieves and returns the list of existing index names."""
         try:
             indices = self.redis_conn.execute_command("FT._LIST")
-            print(f"Existing indices: {indices}")
             return indices
         except ResponseError as e:
             print(f"Error retrieving indices: {str(e)}")
@@ -58,10 +58,10 @@ class Redisearch:
         try:
             # Construct the search query for a specific ID
             query = Query(f"@id:{request_id}")
+
             # Execute the FT.SEARCH command
             results = self.client.search(query)
             results = results.docs
-            print(f"Retrieved item with ID '{request_id}'")
             return results[0].__dict__ if len(results) >= 1 else None
         except ResponseError as e:
             print(f"Error retrieving item with ID '{request_id}': {str(e)}")
@@ -76,8 +76,6 @@ class Redisearch:
 
             # Collect the documents into a list
             items = [doc.__dict__ for doc in results.docs]
-            for item in items:
-                print(item)
             print(f"Retrieved {len(items)} items from index '{self.index_name}'.")
             return items
         except ResponseError as e:
@@ -86,10 +84,8 @@ class Redisearch:
 
     def add_document(self):
         """Reads a CSV file and adds each row as a document to the Redisearch index."""
-        df = pd.read_csv("movie.csv")
-        df["genres"] = df["genres"].apply(
-            lambda x: ast.literal_eval(x) if isinstance(x, str) else []
-        )
+        df = pd.read_csv("./datasets/movie.csv")
+        df["genres"] = df["genres"].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else [])
         df = df.iloc[:100].copy()
 
         for index, row in df.iterrows():
@@ -131,17 +127,13 @@ class Redisearch:
                     .load(f"@{field}")
                 )
                 results = self.client.aggregate(request)
-                print(
-                    f"Found {len(results.rows)} results with {field} = '{search_term}'."
-                )
+                print(f"Found {len(results.rows)} results with {field} = '{search_term}'.")
                 return results.rows
 
-            # Perform search
+            # Execute the search query
             results = self.client.search(query)
             search_results = [doc.__dict__ for doc in results.docs]
-            print(
-                f"Found {len(search_results)} results for search term '{search_term}'."
-            )
+            print(f"Found {len(search_results)} results for search term '{search_term}'.")
             return search_results
 
         except Exception as e:

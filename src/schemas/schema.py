@@ -1,5 +1,6 @@
+from typing import List, Optional
+
 from pydantic import BaseModel
-from typing import List
 
 
 class Movie(BaseModel):
@@ -7,6 +8,6 @@ class Movie(BaseModel):
     title: str
     director: str
     genres: List[str]
-    overview: str
+    overview: Optional[str] = ""
     vote_average: float
-    vote_count: int
+    vote_count: Optional[int] = -1

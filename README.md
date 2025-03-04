@@ -87,14 +87,21 @@ This API provides endpoints to interact with a Redisearch index for managing mov
   ```
 - **Response:**
   ```json
-  [
-    {
-      "id": "1",
-      "title": "Inception",
-      "genres": ["Sci-Fi", "Thriller"],
-      "release_year": 2010
-    }
-  ]
+  {
+    "success": true,
+    "data": [
+        {
+            "id": "doc:96",
+            "payload": null,
+            "vote_average": "8.1",
+            "vote_count": "13752",
+            "director": "Christopher Nolan",
+            "genres": "[\"Action\", \"Thriller\", \"Science\", \"Fiction\", \"Mystery\", \"Adventure\"]",
+            "title": "Inception",
+            "overview": "Cobb, a skilled thief who commits corporate espionage by infiltrating the subconscious of his targets is offered a chance to regain his old life as payment for a task considered to be impossible: \"inception\", the implantation of another person's idea into a target's subconscious."
+        }
+    ]
+  }
   ```
 
 ## Running the API

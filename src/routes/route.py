@@ -1,11 +1,11 @@
 from typing import Any, Optional
+
 from fastapi import APIRouter
 from fastapi.encoders import jsonable_encoder
+from src.schemas import response, schema
+from src.services import service
 from starlette import status
 from starlette.responses import JSONResponse
-
-from src.schemas import schema, response
-from src.services import service
 
 api_router = APIRouter()
 
@@ -42,26 +42,26 @@ def error_response(
 
 
 @api_router.post("/insert", response_model=response.MovieResponse)
-async def insert_movie(request: schema.Movie) -> JSONResponse:
+async def insert_movie(request: schema.Movie):
     response = service.insert(request)
-    print(response)
     return success_response(response)
 
 
 @api_router.put("/update", response_model=response.MovieResponse)
-async def update_movie(request_id: str, request: schema.Movie) -> JSONResponse:
-    response = service.update(request_id, request)
-    print(response)
+async def update_movie(id: str, request: dict):
+    response = service.update(id, request)
+    if response is None:
+        return error_response(errors="Movie not found.", status_code=status.HTTP_404_NOT_FOUND)
     return success_response(response)
 
 
 @api_router.delete("/delete", response_model=response.BaseResponse)
-async def delete_movie(request_id: str) -> JSONResponse:
-    service.delete(request_id)
+async def delete_movie(id: str):
+    service.delete(id)
     return success_response()
 
 
 @api_router.get("/search", response_model=response.MovieListResponse)
-async def search_movie(search_term: str, field: str) -> JSONResponse:
+async def search_movie(search_term: str, field: str):
     response = service.search(search_term, field)
     return success_response(response)

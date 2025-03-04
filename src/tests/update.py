@@ -23,8 +23,5 @@ if __name__ == "__main__":
 
     # Update the item
     request = {"vote_count": 1003}
-    update(100, request)
-
-    # Get the inserted item
-    result = redisearch.get_item(100)
+    result = update(100, request)
     print(f"Retrieved movie with ID {100}: {result}")

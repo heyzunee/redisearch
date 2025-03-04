@@ -13,8 +13,10 @@ def insert(request: Movie, index_name="idx:test"):
         __dict["genres"] = json.dumps(__dict["genres"])
         redisearch.client.redis.hset(f"doc:{request.id}", mapping=__dict)
         print(f"Inserted request with ID: {request.id}")
+        return redisearch.get_item(request.id)
     except Exception as e:
         print(f"Failed to insert request with ID: {request.id}: {str(e)}")
+        return None
 
 
 def delete(request_id: str, index_name="idx:test"):

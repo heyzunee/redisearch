@@ -10,13 +10,13 @@ from starlette.responses import JSONResponse
 api_router = APIRouter()
 
 
-def success_response(response_data: Optional[Any] = None) -> JSONResponse:
+def success_response(message: str, response_data: Optional[Any] = None) -> JSONResponse:
     """
     Returns a JSON response with the given status code and the given data.
     :param response_data: The data to be returned.
     :return: A JSON response with the given status code and the given data.
     """
-    response_json = {"success": True}
+    response_json = {"message": message}
 
     if response_data is not None:
         response_json["data"] = jsonable_encoder(response_data)
@@ -44,7 +44,9 @@ def error_response(
 @api_router.post("/insert", response_model=response.MovieResponse)
 async def insert_movie(request: schema.Movie):
     response = service.insert(request)
-    return success_response(response)
+    if response is None:
+        return error_response(errors="Failed to insert movie.")
+    return success_response(f"Inserted request with ID: {request.id}", response)
 
 
 @api_router.put("/update", response_model=response.MovieResponse)
@@ -52,16 +54,16 @@ async def update_movie(id: str, request: dict):
     response = service.update(id, request)
     if response is None:
         return error_response(errors="Movie not found.", status_code=status.HTTP_404_NOT_FOUND)
-    return success_response(response)
+    return success_response(f"Updated request with ID: {id}", response)
 
 
 @api_router.delete("/delete", response_model=response.BaseResponse)
 async def delete_movie(id: str):
     service.delete(id)
-    return success_response()
+    return success_response(f"Deleted request with ID: {id}")
 
 
 @api_router.get("/search", response_model=response.MovieListResponse)
 async def search_movie(search_term: str, field: str):
     response = service.search(search_term, field)
-    return success_response(response)
+    return success_response(f"Found {len(response)} items for search term '{search_term}'", response)

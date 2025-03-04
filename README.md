@@ -17,25 +17,27 @@ This API provides endpoints to interact with a Redisearch index for managing mov
 - **Request Body:**
   ```json
   {
-    "id": "1",
-    "title": "Inception",
-    "director": "",
-    "genres": ["Sci-Fi", "Thriller"],
-    "overview": "",
-    "vote_average": 0.0,
-    "vote_count": 2
+    "id": "100",
+    "title": "The Curious Case of Benjamin Button",
+    "director": "David Fincher",
+    "genres": ["Fantasy", "Drama", "Thriller", "Mystery", "Romance"],
+    "vote_average": 7.3,
   }
   ```
 - **Response:**
   ```json
   {
-    "id": "1",
-    "title": "Inception",
-    "director": "",
-    "genres": ["Sci-Fi", "Thriller"],
-    "overview": "",
-    "vote_average": 0.0,
-    "vote_count": 2
+    "message": "Inserted request with ID: 100",
+    "data": {
+        "id": "doc:100",
+        "payload": null,
+        "title": "The Curious Case of Benjamin Button",
+        "director": "David Fincher",
+        "genres": "[\"Fantasy\", \"Drama\", \"Thriller\", \"Mystery\", \"Romance\"]",
+        "overview": "",
+        "vote_average": "7.3",
+        "vote_count": "-1"
+    }
   }
   ```
 
@@ -44,10 +46,14 @@ This API provides endpoints to interact with a Redisearch index for managing mov
 
 - **Endpoint:** `DELETE /delete/{id}`
 - **Path Parameter:** `id` (string) - The ID of the movie to delete.
+- **Example Request:**
+  ```
+  DELETE /delete?id=100
+  ```
 - **Response:**
   ```json
   {
-    "message": "Deleted request with ID: 1"
+    "message": "Deleted request with ID: 100"
   }
   ```
 
@@ -56,21 +62,31 @@ This API provides endpoints to interact with a Redisearch index for managing mov
 
 - **Endpoint:** `PUT /update/{id}`
 - **Path Parameter:** `id` (string) - The ID of the movie to update.
+- **Example Request:**
+  ```
+  PUT /update?id=100
+  ```
 - **Request Body:**
   ```json
   {
-    "title": "Interstellar",
-    "genres": ["Sci-Fi", "Drama"],
-    "release_year": 2014
+    "vote_average": 8.0,
+    "vote_count": 2000
   }
   ```
 - **Response:**
   ```json
   {
-    "id": "1",
-    "title": "Interstellar",
-    "genres": ["Sci-Fi", "Drama"],
-    "release_year": 2014
+    "message": "Updated request with ID: 100",
+    "data": {
+        "id": "doc:100",
+        "payload": null,
+        "title": "The Curious Case of Benjamin Button",
+        "director": "David Fincher",
+        "genres": "[\"Fantasy\", \"Drama\", \"Thriller\", \"Mystery\", \"Romance\"]",
+        "overview": "",
+        "vote_average": "8.0",
+        "vote_count": "2000"
+    }
   }
   ```
 
@@ -83,12 +99,12 @@ This API provides endpoints to interact with a Redisearch index for managing mov
   - `field` (string) - The field to search in (e.g., "title").
 - **Example Request:**
   ```
-  GET /movies/search?search_term=Inception&field=title
+  GET /search?search_term=Inception&field=title
   ```
 - **Response:**
   ```json
   {
-    "success": true,
+    "message": "Found 1 items for search term 'Inception'",
     "data": [
         {
             "id": "doc:96",
@@ -106,8 +122,8 @@ This API provides endpoints to interact with a Redisearch index for managing mov
 
 ## Running the API
 1. Start Redis with Redisearch module enabled.
-2. Run the Python server (`main.py` or `app.py`).
-3. Use tools like Postman or cURL to interact with the endpoints.
+2. Run the Python server (`scripts/run.sh`).
+3. Use tools like Postman or CURL to interact with the endpoints.
 
 ## Notes
 - Ensure Redis is running before using the API.

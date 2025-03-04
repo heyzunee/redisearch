@@ -130,6 +130,3 @@ This API provides endpoints to interact with a Redisearch index for managing mov
 - The `index_name` is set to `idx:test` by default.
 - The `Movie` schema is expected to follow the provided JSON format.
 
-## License
-MIT License
-

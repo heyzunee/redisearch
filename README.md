@@ -9,7 +9,9 @@ This API provides endpoints to interact with a Redisearch index for managing mov
 - Required dependencies (install via `pip install -r requirements.txt`)
 
 ## Running the API
-`scripts/run.sh`
+```
+scripts/run.sh
+```
 
 ## Endpoints
 

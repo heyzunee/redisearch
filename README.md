@@ -8,6 +8,9 @@ This API provides endpoints to interact with a Redisearch index for managing mov
 - Redis server with Redisearch module enabled
 - Required dependencies (install via `pip install -r requirements.txt`)
 
+## Running the API
+`scripts/run.sh`
+
 ## Endpoints
 
 ### 1. Insert a Movie
@@ -119,7 +122,3 @@ This API provides endpoints to interact with a Redisearch index for managing mov
     ]
   }
   ```
-
-## Running the API
-`scripts/run.sh`
-

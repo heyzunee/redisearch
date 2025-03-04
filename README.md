@@ -121,12 +121,5 @@ This API provides endpoints to interact with a Redisearch index for managing mov
   ```
 
 ## Running the API
-1. Start Redis with Redisearch module enabled.
-2. Run the Python server (`scripts/run.sh`).
-3. Use tools like Postman or CURL to interact with the endpoints.
-
-## Notes
-- Ensure Redis is running before using the API.
-- The `index_name` is set to `idx:test` by default.
-- The `Movie` schema is expected to follow the provided JSON format.
+`scripts/run.sh`
 

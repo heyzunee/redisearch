@@ -1,0 +1,5 @@
+redisearch==2.0.0
+environs==11.0.0
+fastapi==0.75.2
+uvicorn[standard]==0.18.3
+prometheus-client==0.14.1
